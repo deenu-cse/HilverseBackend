@@ -1,3 +1,4 @@
+require("dotenv").config()
 const generateMealPlan = require("../middleware/FoodChartMiddleware");
 const FoodChart = require("../models/FoodChartModel");
 const Patient = require("../models/patientModel");
@@ -50,7 +51,7 @@ const Foodbook = async (req, res) => {
         if (existingPatient) {
             return res.status(400).json({
                 message: 'A patient with this contact information already exists.',
-                data: existingPatient, 
+                data: existingPatient,
             });
         }
 
@@ -65,7 +66,7 @@ const Foodbook = async (req, res) => {
             gender,
             contactInfo,
             emergencyContact,
-            patientId: generateId(), 
+            patientId: generateId(),
         });
 
         const savedPatient = await newPatient.save();
@@ -147,9 +148,9 @@ const Patientupd = async (req, res) => {
         const { patientId } = req.params;
 
         const patientData = await Patient.findOneAndUpdate(
-            { patientId: patientId }, 
-            req.body, 
-            { new: true } 
+            { patientId: patientId },
+            req.body,
+            { new: true }
         );
 
         if (!patientData) {
@@ -168,7 +169,7 @@ const verifyToken = (req, res, next) => {
     const token = req.headers.authorization?.split(" ")[1];
     if (!token) return res.status(401).json({ message: "No token provided." });
 
-    jwt.verify(token, "Delivery-boy-key", (err, decoded) => {
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
         if (err) return res.status(403).json({ message: "Failed to authenticate token." });
         req.staffId = decoded.staffId;
         next();
@@ -184,7 +185,7 @@ const DeliveryBoy = async (req, res) => {
         if (!staff) return res.status(404).json({ message: "Staff not found." });
 
         const tasks = await MealTask.find({ staffId: staff._id });
-        const token = jwt.sign({ staffId: staff._id }, "Delivery-boy-key", { expiresIn: "5d" });
+        const token = jwt.sign({ staffId: staff._id }, process.env.JWT_SECRET, { expiresIn: "5d" });
 
         res.json({ token, assignedTasks: tasks });
     } catch (err) {
