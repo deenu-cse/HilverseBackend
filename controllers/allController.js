@@ -6,14 +6,14 @@ const PantryStaff = require('../models/PantryStaffModel')
 const MealTask = require('../models/MealTaskModel')
 const jwt = require('jsonwebtoken')
 
-function generateId() {
+const generateId = () => {
     const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     let userId = "";
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 8; i++) {
         userId += characters.charAt(Math.floor(Math.random() * characters.length));
     }
     return userId;
-}
+};
 
 const Foodbook = async (req, res) => {
     console.log(req.body);
@@ -66,8 +66,8 @@ const Foodbook = async (req, res) => {
             gender,
             contactInfo,
             emergencyContact,
-            patientId: generateId(),
-        });
+            patientId: { userId: generateId() },
+        });        
 
         const savedPatient = await newPatient.save();
 
@@ -86,7 +86,7 @@ const GenFoodChart = async (req, res) => {
     // console.log("code in foodchart...");
 
     try {
-        const patient = await Patient.findOne({ patientId: patientId });
+        const patient = await Patient.findOne({ "patientId.userId": patientId });
 
         if (!patient) {
             return res.status(404).json({ message: 'Patient not found!' });
@@ -130,7 +130,7 @@ const GetPatientDetail = async (req, res) => {
     const { patientId } = req.params;
     console.log("Code here....")
     try {
-        const patient = await Patient.findOne({ patientId: patientId });
+        const patient = await Patient.findOne({ "patientId.userId": patientId });
 
         if (!patient) {
             return res.status(404).json({ message: 'Patient not found!' });
@@ -148,7 +148,7 @@ const Patientupd = async (req, res) => {
         const { patientId } = req.params;
 
         const patientData = await Patient.findOneAndUpdate(
-            { patientId: patientId },
+            { "patientId.userId": patientId },
             req.body,
             { new: true }
         );
