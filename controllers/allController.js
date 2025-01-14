@@ -268,6 +268,18 @@ const MealTaskGet = async (req, res) => {
     }
 }
 
+const AllTaskGet = async (req, res) => {
+    try {
+        const tasks = await MealTask.find()
+        if (!tasks) {
+            return res.status(404).json({ message: 'Patient not found!' });
+        }
+        res.json(tasks);
+    } catch (error) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
 const MealTaskUpd = async (req, res) => {
     try {
         const { id } = req.params;
@@ -282,4 +294,4 @@ const MealTaskUpd = async (req, res) => {
     }
 }
 
-module.exports = { Foodbook, GenFoodChart, PantryStaffx, PantryStaffAdd, PantryStaffDel, MealTaskAdd, MealTaskGet, MealTaskUpd, GetPatientDetail, Patientupd, DeliveryBoy, verifyToken, getAssignedTasks, getAllPatients };
+module.exports = { Foodbook, GenFoodChart, PantryStaffx, PantryStaffAdd, PantryStaffDel, MealTaskAdd, MealTaskGet, MealTaskUpd, GetPatientDetail, Patientupd, DeliveryBoy, verifyToken, getAssignedTasks, getAllPatients, AllTaskGet };
