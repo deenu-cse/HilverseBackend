@@ -67,7 +67,7 @@ const Foodbook = async (req, res) => {
             contactInfo,
             emergencyContact,
             patientId: { userId: generateId() },
-        });        
+        });
 
         const savedPatient = await newPatient.save();
 
@@ -255,8 +255,13 @@ const MealTaskAdd = async (req, res) => {
 }
 
 const MealTaskGet = async (req, res) => {
+    const { id } = req.params;
     try {
-        const tasks = await MealTask.find().populate("staffId", "name");
+        const tasks = await MealTask.findOne({ patientId: id }).populate("staffId", "name");
+
+        if (!tasks) {
+            return res.status(404).json({ message: 'Patient not found!' });
+        }
         res.json(tasks);
     } catch (err) {
         res.status(500).json({ error: err.message });

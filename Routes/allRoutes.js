@@ -9,7 +9,7 @@ router.get("/pantry-staff", PantryStaffx);
 router.post("/pantry-staffadd", PantryStaffAdd);
 router.delete("/pantry-staffid/:id", PantryStaffDel);
 router.post("/meal-tasks", MealTaskAdd);
-router.get("/get-tasks", MealTaskGet);
+router.get("/get-tasks/:id", MealTaskGet);
 router.put("/tasks/:id", MealTaskUpd);
 router.put("/patientUpd/:patientId", Patientupd);
 router.post('/getpatient/:patientId', GetPatientDetail)
